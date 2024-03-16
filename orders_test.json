@@ -54,7 +54,6 @@
         "entry": "in",
         "delivery": {
           "name": "fugiat",
-          "phone": "laborum in magna",
           "zip": "sunt commodo",
           "city": "eu",
           "address": "consequat veniam laborum ut",
@@ -67,7 +66,7 @@
           "currency": "reprehenderit adipisicing exercitation occaecat",
           "provider": "Duis irure labore mollit veniam",
           "amount": 68335162,
-          "payment_dt": -55118397,
+          "payment_dt": "d",
           "bank": "ut laborum reprehenderit velit",
           "delivery_cost": 10432045,
           "goods_total": 56046636,

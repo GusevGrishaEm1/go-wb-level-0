@@ -41,7 +41,8 @@ func TestProduceOrder(t *testing.T) {
 	repository := &repositoryMock{1}
 	cache, err := cache.NewOrderCache(ctx, repository)
 	require.NoError(t, err)
-	service := NewOrderService(&config.Config{}, cache, repository)
+	service, err := NewOrderService(&config.Config{}, cache, repository)
+	require.NoError(t, err)
 	go service.SaveOrders(ctx)
 	fileContent, err := os.ReadFile("../../../orders_test.json")
 	require.NoError(t, err)

@@ -4,6 +4,8 @@ import (
 	"context"
 	"level0/internal/app/config"
 	"level0/internal/app/models"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/xeipuuv/gojsonschema"
@@ -28,15 +30,20 @@ type orderService struct {
 	OrderRepository
 }
 
-func NewOrderService(config *config.Config, storage OrderCache, repository OrderRepository) *orderService {
-	schemaLoader := gojsonschema.NewReferenceLoader(`file:///schema.json`)
+func NewOrderService(config *config.Config, storage OrderCache, repository OrderRepository) (*orderService, error) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+	schemaPath := filepath.Join(currentDir, "../../schema.json")
+	schemaLoader := gojsonschema.NewReferenceLoader("file:///"+schemaPath)
 	return &orderService{
 		config,
 		make(chan *models.Order, 1024),
 		schemaLoader,
 		storage,
 		repository,
-	}
+	}, nil
 }
 
 func (s *orderService) GetOrder(id int) string {
@@ -84,7 +91,6 @@ func (s *orderService) SaveOrders(ctx context.Context) {
 			orders = orders[:0]
 		}
 	}()
-loop:
 	for {
 		select {
 		case val := <-s.ch:
@@ -107,7 +113,7 @@ loop:
 				orders = orders[:0]
 			}
 		case <-ctx.Done():
-			break loop
+			return
 		}
 	}
 }

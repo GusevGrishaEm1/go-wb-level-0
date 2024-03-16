@@ -32,7 +32,10 @@ func StartServer(ctx context.Context, config *config.Config) error {
 	if err != nil {
 		return err
 	}
-	service := usecase.NewOrderService(config, cache, repository)
+	service, err := usecase.NewOrderService(config, cache, repository)
+	if err != nil {
+		return err
+	}
 	handler := handlers.NewOrderHandler(service)
 
 	nc, err := nats.Connect(config.NatsAddress)
