@@ -9,8 +9,7 @@ import (
 func main() {
 	context := context.Background()
 	config := &config.Config{}
-	config.InitByFlags()
-	//config.InitByEnv()
+	config.InitByEnv()
 	err := server.StartServer(context, config)
 	if err != nil {
 		panic(err)
