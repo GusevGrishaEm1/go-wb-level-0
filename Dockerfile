@@ -6,7 +6,7 @@ COPY go.mod go.sum ./
 
 RUN go mod download
 
-COPY orders_test.json schema.json ./
+COPY internal/app/usecase/testdata/orders_test.json schema.json ./
 COPY cmd/app ./cmd/app/
 COPY internal ./internal/
 

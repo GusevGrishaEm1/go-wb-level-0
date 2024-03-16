@@ -9,6 +9,7 @@ import (
 func main() {
 	context := context.Background()
 	config := &config.Config{}
+	config.InitDefault()
 	config.InitByEnv()
 	err := server.StartServer(context, config)
 	if err != nil {

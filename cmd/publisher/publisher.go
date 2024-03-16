@@ -11,7 +11,7 @@ import (
 
 func main() {
 	nc, _ := nats.Connect(nats.DefaultURL)
-	fileContent, err := os.ReadFile("../../orders_test.json")
+	fileContent, err := os.ReadFile("./orders_test.json")
 	if err != nil {
 		log.Fatalf("Ошибка чтения файла: %v", err)
 	}

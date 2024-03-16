@@ -27,6 +27,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SERVER_ADDRESS: "localhost:8080"
+      SERVER_ADDRESS: "0.0.0.0:8080"
       DB_ADDRESS: "postgres://test:test@postgres:5432/test"
       NATS_ADDRESS: "nats-streaming:4222"
+      SCHEMA_PATH: "schema.json"

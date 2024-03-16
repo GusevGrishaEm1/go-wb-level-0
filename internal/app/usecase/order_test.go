@@ -37,14 +37,15 @@ func (r *repositoryMock) FindAll(ctx context.Context) ([]*models.Order, error) {
 }
 
 func TestProduceOrder(t *testing.T) {
+	config := &config.Config{}
 	ctx := context.Background()
 	repository := &repositoryMock{1}
 	cache, err := cache.NewOrderCache(ctx, repository)
 	require.NoError(t, err)
-	service, err := NewOrderService(&config.Config{}, cache, repository)
+	service, err := NewOrderService(config, cache, repository)
 	require.NoError(t, err)
 	go service.SaveOrders(ctx)
-	fileContent, err := os.ReadFile("../../../orders_test.json")
+	fileContent, err := os.ReadFile("./testdata/orders_test.json")
 	require.NoError(t, err)
 	var orders []map[string]interface{}
 	err = json.Unmarshal(fileContent, &orders)

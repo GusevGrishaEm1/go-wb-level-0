@@ -4,6 +4,7 @@ import (
 	"context"
 	"level0/internal/app/config"
 	"level0/internal/app/models"
+	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -35,7 +36,8 @@ func NewOrderService(config *config.Config, storage OrderCache, repository Order
 	if err != nil {
 		return nil, err
 	}
-	schemaPath := filepath.Join(currentDir, "../../schema.json")
+	schemaPath := filepath.Join(currentDir, "schema.json")
+	log.Print(schemaPath)
 	schemaLoader := gojsonschema.NewReferenceLoader("file:///"+schemaPath)
 	return &orderService{
 		config,
