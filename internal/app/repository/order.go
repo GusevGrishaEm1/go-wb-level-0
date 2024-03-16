@@ -22,7 +22,7 @@ func (r *orderRepository) SaveAll(ctx context.Context, orders []*models.Order) (
 		insert into "order" (order_info_json, error_message) values($1, $2) returning 0 as id, '' as order_info_json
 	`
 	queryInsWithoutErr := `
-		insert into "order" (order_info_json) values($1) returning id, cast(order_info_json as varchar) as order_info_json
+		insert into "order" (order_info_json) values($1) returning id as id, cast(order_info_json as varchar) as order_info_json
 	`
 	batch := &pgx.Batch{}
 	for _, el := range orders {
@@ -33,22 +33,25 @@ func (r *orderRepository) SaveAll(ctx context.Context, orders []*models.Order) (
 		}
 	}
 	res := r.pool.SendBatch(ctx, batch)
-	rows, err := res.Query()
-	if err != nil {
-		return nil, err
-	}
-	savedOrders := make([]*models.Order, 0)
-	for rows.Next() {
+	savedValidOrders := make([]*models.Order, 0)
+	var i = 0
+	for i < batch.Len() {
+		row := res.QueryRow()
 		order := &models.Order{}
-		err = rows.Scan(&order.ID, &order.OrderInfoJSON)
+		err := row.Scan(&order.ID, &order.OrderInfoJSON)
 		if err != nil {
 			return nil, err
 		}
 		if order.ID != 0 && order.OrderInfoJSON != "" {
-			orders = append(orders, order)
+			savedValidOrders = append(savedValidOrders, order)
 		}
+		i++
 	}
-	return savedOrders, nil
+	err := res.Close()
+	if err != nil {
+		return nil, err
+	}
+	return savedValidOrders, nil
 }
 
 func (r *orderRepository) FindAll(ctx context.Context) ([]*models.Order, error) {

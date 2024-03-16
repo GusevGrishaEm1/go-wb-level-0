@@ -4,7 +4,6 @@ import (
 	"context"
 	"level0/internal/app/config"
 	"level0/internal/app/models"
-	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -36,8 +35,7 @@ func NewOrderService(config *config.Config, storage OrderCache, repository Order
 	if err != nil {
 		return nil, err
 	}
-	schemaPath := filepath.Join(currentDir, "schema.json")
-	log.Print(schemaPath)
+	schemaPath := filepath.Join(currentDir, config.SchemaPath)
 	schemaLoader := gojsonschema.NewReferenceLoader("file:///"+schemaPath)
 	return &orderService{
 		config,
@@ -85,8 +83,7 @@ func getMessage(result *gojsonschema.Result) string {
 
 func (s *orderService) SaveOrders(ctx context.Context) {
 	orders := make([]*models.Order, 0)
-	var err error
-	ticker := time.NewTicker(1000 * time.Millisecond)
+	ticker := time.NewTicker(2000 * time.Millisecond)
 	defer func() {
 		if len(orders) > 0 {
 			s.SaveAll(ctx, orders)
@@ -98,20 +95,20 @@ func (s *orderService) SaveOrders(ctx context.Context) {
 		case val := <-s.ch:
 			orders = append(orders, val)
 			if len(orders) > MaxSizeArray {
-				orders, err = s.SaveAll(ctx, orders)
+				savedOrders, err := s.SaveAll(ctx, orders)
 				if err != nil {
 					continue
 				}
-				s.putAllToCache(orders)
+				s.putAllToCache(savedOrders)
 				orders = orders[:0]
 			}
 		case <-ticker.C:
 			if len(orders) > 0 {
-				orders, err = s.SaveAll(ctx, orders)
+				savedOrders, err := s.SaveAll(ctx, orders)
 				if err != nil {
 					continue
 				}
-				s.putAllToCache(orders)
+				s.putAllToCache(savedOrders)
 				orders = orders[:0]
 			}
 		case <-ctx.Done():

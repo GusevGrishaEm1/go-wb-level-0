@@ -22,8 +22,11 @@ func NewOrderHandler(s OrderService) *orderHandler {
 func (h *orderHandler) GetOrderHandler(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return err
+		return c.NoContent(http.StatusInternalServerError)
 	}
-	order := h.GetOrder(int(id))
+	order := h.GetOrder(id)
+	if order == "" {
+		return c.NoContent(http.StatusNoContent)
+	}
 	return c.JSONBlob(http.StatusOK, []byte(order))
 }

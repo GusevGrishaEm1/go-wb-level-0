@@ -18,7 +18,7 @@ func (c *Config) InitDefault() {
 	c.ServerAddress = "localhost:8080"
 	c.DBAddress = "postgresql://test:test@localhost:5432/test"
 	c.NatsAddress = "nats://localhost:4222"
-	c.SchemaPath = "/../../schema.json"
+	c.SchemaPath = "../../schema.json"
 }
 
 func (c *Config) InitByEnv() {

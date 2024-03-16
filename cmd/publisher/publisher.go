@@ -24,8 +24,7 @@ func main() {
 		if err != nil {
 			log.Fatalf("Ошибка кодирования JSON: %v", err)
 		}
-		var response string
-		nc.PublishRequest("orders", response, orderJSON)
+		nc.Publish("orders", orderJSON)
 	}
 	defer nc.Close()
 }
