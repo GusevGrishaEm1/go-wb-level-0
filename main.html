@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <input type="number" id="orderId" value="1"/>
+        <button type="button" onclick="getOrder()">Get Order</button>
+        <div id="orderResult"></div>
+    </body>
+    <script>
+        function getOrder() {
+            var orderId = document.getElementById("orderId").value;
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/api/order/" + orderId, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById("orderResult").innerText = xhr.responseText;
+                } else {
+                    document.getElementById("orderResult").innerText = "Failed to fetch order. Status: " + xhr.status;
+                }
+            };
+            xhr.send();
+        }
+    </script>
+</html>

@@ -49,8 +49,13 @@ func StartServer(ctx context.Context, config *config.Config) error {
 	
 	go service.SaveOrders(ctx)
 	e := echo.New()
+	e.GET("/", MainHandler)
 	e.GET("/api/order/:id", handler.GetOrderHandler)
 	return e.Start(config.ServerAddress)
+}
+
+func MainHandler(c echo.Context) error {
+    return c.File("main.html")
 }
 
 func initNats(config *config.Config, service OrderService) error {
