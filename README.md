@@ -1,5 +1,5 @@
 # go-wb-level-0
 Wildberries Trainee Level 0
 
-# Start Server
-docker-compose up
+# How to Start
+To start server use docker-compose up
